@@ -1,61 +1,69 @@
 # Cruzeiro Analytics ⚽💙
 
-End-to-end football data analytics project focused on **Cruzeiro Esporte Clube**.
+Projeto de análise de dados de futebol de ponta a ponta, com foco no **Cruzeiro Esporte Clube**.
 
-The project aims to build a complete data platform covering data ingestion, transformation, modeling, orchestration and visualization while applying modern Data Engineering and Business Intelligence concepts.
+O objetivo é construir uma plataforma completa de dados, contemplando desde a ingestão e armazenamento dos dados brutos até transformação, modelagem, orquestração e visualização das informações.
 
-## 🎯 Project Goals
+Além da construção de um produto analítico sobre o Cruzeiro, o projeto tem como objetivo servir como ambiente prático de aprendizado em **Engenharia de Dados, Python, SQL e Business Intelligence**.
 
-* Consume football data from REST APIs
-* Build a Medallion Architecture (Bronze, Silver and Gold)
-* Develop ETL/ELT pipelines using Python
-* Store analytical data using SQL Server
-* Use Parquet and DuckDB for analytical processing
-* Implement automated data quality checks
-* Build a dimensional data model
-* Orchestrate data pipelines using Apache Airflow
-* Create a Power BI semantic model
-* Develop the **Cruzeiro 360** dashboard
-* Automate the complete data pipeline
-* Apply Git and GitHub for version control and project documentation
+## 🎯 Objetivos do Projeto
 
-## 🏗️ Architecture
+* Consumir dados de futebol através de REST APIs
+* Construir uma arquitetura Medallion com camadas Bronze, Silver e Gold
+* Desenvolver pipelines de ETL/ELT utilizando Python
+* Trabalhar com arquivos JSON e Apache Parquet
+* Utilizar DuckDB para processamento e consultas analíticas
+* Armazenar o modelo analítico final em SQL Server
+* Implementar processos de qualidade de dados
+* Construir um modelo dimensional utilizando fatos e dimensões
+* Implementar cargas incrementais
+* Orquestrar os pipelines utilizando Apache Airflow
+* Criar um modelo semântico no Power BI
+* Desenvolver o dashboard **Cruzeiro 360**
+* Automatizar o processo completo de atualização dos dados
+* Utilizar Git e GitHub para versionamento e documentação do projeto
+
+---
+
+## 🏗️ Arquitetura
 
 ```text
-                    Football REST API
-                            |
-                            v
-                    Python Ingestion
-                            |
-                            v
-                    Bronze Layer
-                      Raw JSON
-                            |
-                            v
-                Python + DuckDB
-                            |
-                            v
-                    Silver Layer
-                       Parquet
-                            |
-                            v
-                  Python + SQL
-                            |
-                            v
-                     Gold Layer
-                     SQL Server
-                            |
-                            v
-                       Power BI
+                    REST API de Futebol
+                            │
+                            ▼
+                    Ingestão com Python
+                            │
+                            ▼
+                     Camada Bronze
+                        JSON bruto
+                            │
+                            ▼
+                  Python + DuckDB
+                            │
+                            ▼
+                     Camada Silver
+                         Parquet
+                            │
+                            ▼
+                    Python + SQL
+                            │
+                            ▼
+                      Camada Gold
+                       SQL Server
+                            │
+                            ▼
+                        Power BI
 
 
-              Apache Airflow
-          orchestrates the pipeline
+                   Apache Airflow
+               Orquestração do Pipeline
 ```
 
-The project follows the **Medallion Architecture**, separating raw, processed and analytics-ready data into different layers.
+O projeto seguirá os princípios da **Arquitetura Medallion**, separando os dados de acordo com seu nível de tratamento e finalidade.
 
-## 🛠️ Technologies
+---
+
+## 🛠️ Tecnologias
 
 * Python
 * SQL Server
@@ -67,151 +75,394 @@ The project follows the **Medallion Architecture**, separating raw, processed an
 * Git
 * GitHub
 
-## 🥉 Bronze Layer
+Outras bibliotecas e ferramentas poderão ser adicionadas conforme o projeto evoluir.
 
-The Bronze layer stores the raw data exactly as received from the source APIs.
+---
 
-Its main purpose is to preserve the original source data, enabling auditing, historical tracking and data reprocessing when necessary.
+## 🥉 Camada Bronze
 
-**Format:** JSON
+A camada Bronze será responsável por armazenar os dados brutos exatamente como forem recebidos das fontes.
 
-## 🥈 Silver Layer
+Nesta camada, nenhuma regra de negócio deverá alterar o conteúdo original recebido da API.
 
-The Silver layer contains cleaned, standardized, typed and normalized data.
+O objetivo é preservar os dados de origem para permitir:
 
-In this layer, the project will perform operations such as:
+* auditoria;
+* rastreabilidade;
+* reprocessamento;
+* investigação de problemas;
+* comparação entre diferentes extrações.
 
-* Data type conversion
-* JSON flattening
-* Duplicate removal
-* Null value treatment
-* Date and time standardization
-* Business rule application
-* Data quality validation
+**Formato principal:** JSON
 
-**Format:** Apache Parquet
-
-DuckDB will be used to query and analyze the Parquet files using SQL.
-
-## 🥇 Gold Layer
-
-The Gold layer contains the analytical data model prepared for consumption by Power BI.
-
-A dimensional model will be implemented using fact and dimension tables.
-
-Examples of planned tables include:
+Exemplo de organização:
 
 ```text
-Dimensions
-
-dim_date
-dim_team
-dim_player
-dim_competition
-dim_season
-dim_stadium
-dim_coach
-
-Facts
-
-fact_match
-fact_player_match
-fact_match_event
-fact_standings_snapshot
+data/
+└── bronze/
+    └── api_football/
+        ├── fixtures/
+        ├── players/
+        ├── events/
+        ├── lineups/
+        └── statistics/
 ```
 
-The Gold layer will be stored in **SQL Server**.
+---
 
-## 🔄 Orchestration
+## 🥈 Camada Silver
 
-Apache Airflow will be used to orchestrate and monitor the data pipelines.
+A camada Silver será responsável por transformar os dados brutos da Bronze em estruturas confiáveis, padronizadas e próprias para análise.
 
-The orchestration layer will be responsible for:
+Nesta camada serão realizados processos como:
 
-* Scheduling pipeline executions
-* Managing task dependencies
-* Handling retries and failures
-* Monitoring pipeline execution
-* Centralizing execution logs
-* Running daily and post-match data updates
+* leitura dos arquivos JSON;
+* flatten de objetos e listas;
+* conversão de tipos;
+* tratamento de valores nulos;
+* remoção de duplicidades;
+* padronização de datas e horários;
+* normalização dos dados;
+* aplicação de regras de negócio;
+* validações de qualidade;
+* tratamento de registros inválidos.
 
-Airflow will be introduced after the ingestion, transformation and loading processes are developed and understood individually.
+**Formato principal:** Apache Parquet
 
-## 📊 Analytics
+O DuckDB será utilizado para realizar consultas SQL diretamente sobre os arquivos Parquet.
 
-The final analytical product will be a Power BI dashboard called:
+Exemplo:
+
+```text
+data/
+└── silver/
+    ├── partidas/
+    ├── jogadores/
+    ├── eventos/
+    ├── escalacoes/
+    └── estatisticas/
+```
+
+---
+
+## 🥇 Camada Gold
+
+A camada Gold será responsável por disponibilizar os dados em uma estrutura analítica preparada para consumo pelo Power BI.
+
+Nesta camada será implementado um **modelo dimensional**, utilizando tabelas fato e dimensão.
+
+O armazenamento principal será realizado no **SQL Server**.
+
+### Dimensões planejadas
+
+```text
+dim_data
+dim_time
+dim_jogador
+dim_competicao
+dim_temporada
+dim_estadio
+dim_tecnico
+dim_posicao
+dim_resultado
+```
+
+### Fatos planejados
+
+```text
+fato_partida
+fato_jogador_partida
+fato_evento_partida
+fato_classificacao_snapshot
+fato_transferencia
+```
+
+A modelagem poderá sofrer alterações conforme conhecermos melhor os dados disponibilizados pelas fontes.
+
+---
+
+## 🔄 Orquestração
+
+O **Apache Airflow** será utilizado para orquestrar e monitorar os pipelines do projeto.
+
+Sua implementação acontecerá após os processos individuais de ingestão, transformação e carga estarem funcionando corretamente.
+
+O Airflow será responsável por:
+
+* organizar as etapas do pipeline;
+* controlar dependências entre tarefas;
+* criar agendamentos;
+* executar retries em caso de falhas;
+* monitorar execuções;
+* centralizar logs;
+* controlar cargas diárias;
+* executar cargas pós-jogo;
+* permitir reprocessamentos e backfills.
+
+Fluxo esperado:
+
+```text
+Ingestão
+   │
+   ▼
+Bronze
+   │
+   ▼
+Silver
+   │
+   ▼
+Qualidade dos Dados
+   │
+   ▼
+Dimensões
+   │
+   ▼
+Fatos
+   │
+   ▼
+Validação da Gold
+   │
+   ▼
+Power BI
+```
+
+---
+
+## 📊 Cruzeiro 360
+
+O produto analítico final do projeto será um dashboard desenvolvido no Power BI chamado:
 
 # Cruzeiro 360
 
-The dashboard is planned to include analyses such as:
+O dashboard deverá oferecer uma visão ampla sobre o desempenho esportivo do Cruzeiro.
 
-* Season overview
-* Match results
-* Goals scored and conceded
-* Home vs. away performance
-* Performance by competition
-* League standings evolution
-* Players statistics
-* Top scorers and assists
-* Match details
-* Lineups and formations
-* Recent form
-* Historical season comparisons
-* Data pipeline quality and monitoring
+Entre as análises planejadas estão:
 
-## 🚧 Project Status
+* visão geral da temporada;
+* partidas realizadas;
+* vitórias, empates e derrotas;
+* gols marcados e sofridos;
+* saldo de gols;
+* aproveitamento;
+* desempenho como mandante e visitante;
+* desempenho por competição;
+* evolução mensal;
+* forma recente;
+* classificação por rodada;
+* evolução da posição no campeonato;
+* estatísticas dos jogadores;
+* artilharia;
+* assistências;
+* participações em gols;
+* escalações;
+* formações utilizadas;
+* detalhes das partidas;
+* comparações entre temporadas.
 
-**Under development**
+Também será criada uma área dedicada ao acompanhamento da própria plataforma de dados, exibindo informações como:
 
-Current phase:
+* última atualização;
+* quantidade de registros processados;
+* status das execuções;
+* falhas;
+* qualidade dos dados;
+* histórico das cargas.
 
-**Phase 1 — Project Foundation**
+---
+
+## 📚 Objetivos de Aprendizado
+
+O projeto também será utilizado como ambiente de aprendizado prático para desenvolver conhecimentos em:
+
+### Engenharia de Dados
+
+* Arquitetura Medallion
+* Data Lake
+* ETL/ELT
+* REST APIs
+* cargas incrementais
+* pipelines de dados
+* orquestração
+* qualidade de dados
+* logging
+* modelagem dimensional
+
+### Python
+
+* consumo de APIs;
+* manipulação de JSON;
+* organização de projetos;
+* tratamento de erros;
+* funções reutilizáveis;
+* orientação a objetos quando aplicável;
+* manipulação de DataFrames;
+* automação de processos;
+* testes.
+
+### SQL
+
+* criação de bancos e schemas;
+* DDL e DML;
+* joins;
+* CTEs;
+* funções de janela;
+* procedures;
+* views;
+* `MERGE`;
+* constraints;
+* modelagem dimensional;
+* consultas analíticas;
+* validação de qualidade.
+
+### Business Intelligence
+
+* modelagem semântica;
+* relacionamentos;
+* DAX;
+* visualização de dados;
+* storytelling;
+* Power BI;
+* criação de dashboards.
+
+### DevOps e boas práticas
+
+* Git;
+* GitHub;
+* controle de versão;
+* documentação;
+* Docker;
+* testes automatizados;
+* CI/CD.
+
+---
+
+## 🚧 Status do Projeto
+
+**Em desenvolvimento**
+
+Fase atual:
+
+**Fase 1 — Fundação do Projeto**
+
+---
 
 ## 🗺️ Roadmap
 
-* [ ] **Phase 1 — Foundation**
-* [ ] **Phase 2 — First Data Ingestion**
-* [ ] **Phase 3 — Bronze Layer**
-* [ ] **Phase 4 — Silver Layer**
-* [ ] **Phase 5 — Gold Layer**
-* [ ] **Phase 6 — Orchestration with Apache Airflow**
-* [ ] **Phase 7 — Power BI**
-* [ ] **Phase 8 — Evolution**
+* [ ] **Fase 1 — Fundação**
+* [ ] **Fase 2 — Primeira Ingestão**
+* [ ] **Fase 3 — Camada Bronze**
+* [ ] **Fase 4 — Camada Silver**
+* [ ] **Fase 5 — Camada Gold**
+* [ ] **Fase 6 — Orquestração com Apache Airflow**
+* [ ] **Fase 7 — Power BI**
+* [ ] **Fase 8 — Evolução**
 
-### Phase 1 — Foundation
+### Fase 1 — Fundação
 
-* [x] Create GitHub repository
-* [x] Configure Python
-* [ ] Create virtual environment
-* [ ] Install SQL Server
-* [ ] Create `CruzeiroAnalytics` database
-* [ ] Define project folder structure
-* [ ] Configure environment variables
-* [ ] Prepare initial documentation
+* [x] Criar repositório GitHub
+* [ ] Configurar Python
+* [ ] Criar ambiente virtual
+* [ ] Instalar SQL Server
+* [ ] Criar banco `CruzeiroAnalytics`
+* [ ] Definir estrutura de pastas
+* [ ] Criar arquivo `.env`
+* [ ] Preparar documentação inicial
 
-## 📚 Learning Objectives
+### Fase 2 — Primeira Ingestão
 
-This project is also designed as a practical learning environment for developing skills in:
+* [ ] Criar conta na API
+* [ ] Identificar o Cruzeiro na API
+* [ ] Consultar partidas do Cruzeiro
+* [ ] Salvar o primeiro JSON
+* [ ] Criar log de execução
+* [ ] Analisar e documentar a resposta da API
 
-* Data Engineering
-* Python
-* SQL
-* REST APIs
-* ETL/ELT development
-* Data Lake concepts
-* Medallion Architecture
-* Dimensional Modeling
-* Data Quality
-* Workflow Orchestration
-* Power BI
-* Git and GitHub
+### Fase 3 — Bronze
 
-The project will evolve incrementally, with each component being implemented, tested and documented before moving to the next stage.
+* [ ] Criar funções reutilizáveis
+* [ ] Implementar endpoints
+* [ ] Implementar paginação
+* [ ] Implementar particionamento
+* [ ] Controlar requisições
+* [ ] Implementar retries
+* [ ] Executar carga histórica
 
-## ⚠️ Disclaimer
+### Fase 4 — Silver
 
-This is an independent educational and portfolio project.
+* [ ] Ler arquivos JSON
+* [ ] Realizar flatten dos dados
+* [ ] Aplicar tipagem
+* [ ] Remover duplicidades
+* [ ] Normalizar os dados
+* [ ] Gravar arquivos Parquet
+* [ ] Consultar Silver utilizando DuckDB
+* [ ] Criar testes de qualidade
 
-It is not officially affiliated with, endorsed by or connected to **Cruzeiro Esporte Clube**.
+### Fase 5 — Gold
 
-All football data used in the project will originate from publicly accessible or properly licensed data sources.
+* [ ] Criar modelo estrela
+* [ ] Criar dimensões
+* [ ] Criar fatos
+* [ ] Criar procedures de carga
+* [ ] Implementar cargas incrementais
+* [ ] Implementar `MERGE`
+* [ ] Criar views analíticas
+* [ ] Criar validações SQL
+
+### Fase 6 — Orquestração
+
+* [ ] Transformar os scripts em pipeline
+* [ ] Configurar Apache Airflow
+* [ ] Criar DAG principal
+* [ ] Criar agendamentos
+* [ ] Controlar falhas e retries
+* [ ] Centralizar logs
+* [ ] Criar carga pós-jogo
+
+### Fase 7 — Power BI
+
+* [ ] Conectar ao SQL Server
+* [ ] Criar modelo semântico
+* [ ] Criar medidas DAX
+* [ ] Definir identidade visual
+* [ ] Construir páginas do dashboard
+* [ ] Publicar no Power BI
+
+### Fase 8 — Evolução
+
+* [ ] Configurar gateway
+* [ ] Automatizar atualização do Power BI
+* [ ] Criar testes unitários
+* [ ] Implementar CI/CD
+* [ ] Finalizar documentação
+* [ ] Planejar futura migração para Microsoft Fabric
+
+---
+
+## 🔮 Evoluções Futuras
+
+Após a conclusão da primeira versão, poderão ser exploradas evoluções como:
+
+* inclusão de novas temporadas;
+* análises históricas;
+* comparação entre treinadores;
+* análise de formações táticas;
+* análise de desempenho por jogador;
+* dados de transferências;
+* modelos preditivos;
+* previsão de pontos;
+* probabilidades de resultado;
+* integração com Microsoft Fabric;
+* armazenamento no OneLake;
+* utilização de Lakehouse;
+* utilização de Direct Lake.
+
+---
+
+## ⚠️ Aviso
+
+Este é um projeto independente criado exclusivamente para fins educacionais e de portfólio.
+
+O projeto não possui vínculo oficial, patrocínio ou associação com o **Cruzeiro Esporte Clube**.
+
+Os dados utilizados serão provenientes de fontes públicas ou de serviços cuja utilização esteja de acordo com seus respectivos termos de uso.
