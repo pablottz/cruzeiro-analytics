@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Dados obtidos das APIs; ficam no armazenamento local
+data/
